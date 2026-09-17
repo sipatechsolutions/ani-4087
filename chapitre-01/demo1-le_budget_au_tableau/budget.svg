@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 340" font-family="sans-serif">
+  <rect x="0" y="0" width="880" height="340" fill="#ffffff"/>
+  <text x="440" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">Le budget des 20 ms « mouvement → photon » (à l'échelle : 40 px = 1 ms)</text>
+
+  <!-- Barre : 5 etapes a l'echelle (total 20 ms) -->
+  <g stroke="#ffffff" stroke-width="2">
+    <rect x="40"  y="90" width="60"  height="64" fill="#6ba3d6"/>
+    <rect x="100" y="90" width="80"  height="64" fill="#f0a95b"/>
+    <rect x="180" y="90" width="480" height="64" fill="#e2555a"/>
+    <rect x="660" y="90" width="60"  height="64" fill="#7bc47f"/>
+    <rect x="720" y="90" width="120" height="64" fill="#b08fd0"/>
+  </g>
+  <rect x="40" y="90" width="800" height="64" fill="none" stroke="#333" stroke-width="2"/>
+
+  <!-- Valeur dans le grand segment (code) -->
+  <text x="420" y="128" text-anchor="middle" font-size="15" font-weight="bold" fill="#fff">votre code ≈ 12 ms</text>
+
+  <!-- Axe en ms -->
+  <g stroke="#999" stroke-width="1">
+    <line x1="40"  y1="154" x2="40"  y2="166"/>
+    <line x1="240" y1="154" x2="240" y2="166"/>
+    <line x1="440" y1="154" x2="440" y2="166"/>
+    <line x1="640" y1="154" x2="640" y2="166"/>
+    <line x1="840" y1="154" x2="840" y2="166"/>
+  </g>
+  <g font-size="12" fill="#555" text-anchor="middle">
+    <text x="40"  y="182">0 ms</text>
+    <text x="240" y="182">5 ms</text>
+    <text x="440" y="182">10 ms</text>
+    <text x="640" y="182">15 ms</text>
+    <text x="840" y="182">20 ms</text>
+  </g>
+
+  <!-- Accolade : ce qui reste pour le code -->
+  <path d="M180,214 L180,224 L660,224 L660,214" fill="none" stroke="#e2555a" stroke-width="2"/>
+  <text x="420" y="244" text-anchor="middle" font-size="13" fill="#b3373c">ce qui reste au code ≈ 12 ms (une dizaine) — et il faut y faire DEUX rendus</text>
+
+  <!-- Legende -->
+  <g font-size="12.5" fill="#333">
+    <rect x="120" y="272" width="14" height="14" fill="#6ba3d6"/><text x="140" y="284">Capteurs (~1,5 ms)</text>
+    <rect x="300" y="272" width="14" height="14" fill="#f0a95b"/><text x="320" y="284">Transmission (~2 ms)</text>
+    <rect x="500" y="272" width="14" height="14" fill="#e2555a"/><text x="520" y="284">Votre code (~12 ms)</text>
+    <rect x="120" y="296" width="14" height="14" fill="#7bc47f"/><text x="140" y="308">Compositeur (~1,5 ms)</text>
+    <rect x="300" y="296" width="14" height="14" fill="#b08fd0"/><text x="320" y="308">Affichage (~3 ms)</text>
+    <text x="520" y="308" fill="#666">Matériel total ≈ 8 ms</text>
+  </g>
+</svg>
