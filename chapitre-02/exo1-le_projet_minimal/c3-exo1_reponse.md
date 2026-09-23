@@ -37,20 +37,15 @@ exo1-le_projet_minimal/
 ```
 
 ## Construction — sortie de `jenga build`
+Commande lancée :
 ```
-$ jenga build --config Debug
-[Jenga] Workspace   : Salle
-[Jenga] Config      : Debug | OS : linux | Arch : x86_64
-[Jenga] Projet      : Salle (consoleapp, C++20)
-[Jenga]   Compile   src/main.cpp
-[Jenga]   Link      bin/Debug/Salle
-[Jenga] Build OK    : 1 cible, 0 erreur
+jenga build
 ```
 
-> ⚠️ **À remplacer par ta vraie sortie.** Cette sortie est donnée à titre indicatif : je
-> n'ai pas pu exécuter `jenga build` dans l'environnement où le fichier a été rédigé.
-> Lance `jenga build` sur ta machine (où Jenga est installé) et colle la sortie réelle
-> ici — c'est elle que le correcteur attend.
+Sortie réelle sur ma machine :
+```
+(coller ici la sortie complète et réelle de « jenga build »)
+```
 
 ## Explication
 - `workspace("Salle")` regroupe le(s) projet(s).
