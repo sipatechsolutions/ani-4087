@@ -1,0 +1,15 @@
+from Jenga import *
+
+# Fichier de projet minimal de la salle.
+# Le programme ne fait rien : un main qui rend zero suffit.
+
+with workspace("Salle"):
+    configurations(["Debug", "Release"])
+    targetoses([TargetOS.WINDOWS, TargetOS.LINUX, TargetOS.MACOS])
+    targetarchs([TargetArch.X86_64])
+
+    with project("Salle"):
+        consoleapp()
+        language("C++")
+        cppdialect("C++20")
+        files(["src/**/*.cpp"])
