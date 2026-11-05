@@ -1,0 +1,20 @@
+Images paires et impaires :
+Avec deux images et le mot DPDPDPDP, la camera avance de 10 mm par trame (10, 20, 30, ... 80 mm), mais l'oeil voit 10, 10, 30, 30, 50, 50, 70, 70. Les trames impaires (mode D, index lu apres ReleaseImage) montrent l'image qui vient d'etre peinte : trame 1 -> 10 mm, trame 3 -> 30 mm, trame 5 -> 50 mm, trame 7 -> 70 mm, c'est juste. Les trames paires (mode P, index lu avant ReleaseImage) relisent (prochaine + n - 1) % n alors que l'image n'est pas encore rendue : on tombe sur l'emplacement de la trame d'avant. La trame 2 remontre donc la trame 1 (10 mm au lieu de 20), la trame 4 remontre la trame 3 (30 au lieu de 40), etc. Les sauts alternent entre 0 (image figee) et 20 mm (double pas pour rattraper) : SAUT MIN 0, SAUT MAX 20, TREMBLE OUI. Le mouvement avance par a-coups au lieu de 10 mm reguliers. Ce n'est pas le retard qui tremble : en mode P partout, chaque trame montre la precedente (NOIR, puis 10, 20, ... 70) avec des sauts constants de 10 mm et TREMBLE NON. C'est l'alternance entre une lecture juste et une lecture en retard qui fait trembler.
+
+Avec une seule image :
+Sortie du programme pour l'entree "1 8 0 10" et le mot DPDPDPDP :
+1 10 -
+2 20 10
+3 30 10
+4 40 10
+5 50 10
+6 60 10
+7 70 10
+8 80 10
+SAUT MIN 10
+SAUT MAX 10
+TREMBLE NON
+Avec n = 1, (prochaine + n - 1) % n vaut toujours 0, avant comme apres ReleaseImage, et l'index emprunte vaut aussi 0. Les trois modes designent le meme emplacement, celui que l'on vient de peindre : chaque trame montre sa propre position, les sauts valent tous 10 mm, rien ne tremble. C'est pour cela que le simulateur, qui n'a souvent qu'une image, cache la faute : le bug n'apparait qu'a partir de deux images.
+
+La bonne lecture :
+Il faut lire l'index de la derniere image relachee apres ReleaseImage (mode D), ou soumettre directement l'index emprunte (mode A). Avec deux images, DDDDDDDD et AAAAAAAA donnent tous les deux 10, 20, 30, ... 80 mm, des sauts constants de 10 mm et TREMBLE NON. Lu avant ReleaseImage, GetLastReleasedIndex designe encore l'image de la trame precedente.
