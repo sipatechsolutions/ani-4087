@@ -1,0 +1,21 @@
+La relation :
+Chaque emprunt reussi doit finir par une liberation, donc REUSSIES = LIBERATIONS + le nombre d'images encore empruntees. Avec une chaine, ce nombre vaut 0 ou 1 : ECART = REUSSIES - LIBERATIONS vaut 0 quand la boucle est saine, et 1 quand une image est encore empruntee. Les refus ne comptent pas dans cette relation : un emprunt refuse n'a rien pris, il n'y a donc rien a rendre. Dans resultat.txt, REUSSIES 5 et LIBERATIONS 4 donnent ECART 1 : l'image empruntee par la trame 5 (FUITE) n'a jamais ete rendue, elle est encore empruntee. A partir de la, chaque emprunt est refuse : les trames 6 a 10 sont BLOQUEE. REFUSEES 6 compte ces cinq trames, plus le second emprunt refuse de la trame 3 (DOUBLE), qui ne coute rien a la chaine mais se compte.
+
+Mes trois nombres :
+NKXRDemo ne tourne pas sur ce PC : ses deux cartes graphiques (Intel HD 3000 et AMD HD 7400M) ne gerent pas Vulkan, et l'edition des liens echoue sans le Vulkan SDK. J'ai donc instrumente ma propre boucle de rendu, boucle.cpp (dans ce dossier) : 72 trames par seconde comme un casque, deux yeux, une chaine d'une image par oeil avec la discipline de NkXrSwapchain, et un vrai dessin de 720 x 792 pixels par oeil. Je l'ai fait tourner une minute reelle ; sa sortie exacte est dans boucle_minute.txt :
+DUREE 60.0002 s
+TRAMES 4319
+REUSSIES 8638
+REFUSEES 0
+LIBERATIONS 8638
+ECART 0
+ENCORE EMPRUNTEE NON
+Il y a 8638 emprunts reussis, deux par trame (4319 x 2), autant de liberations, et aucun refus : la relation est respectee, avec un ecart de 0. Une trame manque par rapport aux 4320 attendues a 72 Hz : le PC compilait et faisait tourner un autre programme en meme temps.
+
+Le chemin qui fuit :
+Ma boucle ne fuit pas, mais voici le chemin qui fuirait. Dans boucle.cpp, entre l'emprunt et le dessin :
+    if (!chaines[e].AcquireImage(index)) continue;   // refuse : rien a rendre
+    // if (fenetreReduite) continue;                 // <- CHEMIN QUI FUIT
+    Dessine(cibles[e], trame, e);
+    chaines[e].ReleaseImage();
+Une sortie anticipee placee apres un emprunt reussi (une fenetre reduite, une erreur de rendu, un oeil a sauter) quitte l'oeil sans ReleaseImage. C'est exactement le chemin "sortie" d'emprunts.cpp (ligne 60 : il affiche FUITE sans rendre l'image). L'ecart passe a 1 et ENCORE EMPRUNTEE a OUI. Ensuite, chaque AcquireImage de cet oeil est refuse, et l'oeil reste fige jusqu'a la fin, comme les trames 6 a 10 de resultat.txt. Le remede : ne jamais sortir entre AcquireImage et ReleaseImage, ou faire rendre l'image par tous les chemins de sortie.
