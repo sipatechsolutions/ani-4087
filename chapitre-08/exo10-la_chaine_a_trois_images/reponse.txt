@@ -1,0 +1,43 @@
+Mes trente lignes :
+NKXRDemo ne tourne pas sur ce PC : ses deux cartes graphiques (Intel HD 3000 et AMD HD 7400M) ne gerent pas Vulkan. Ma salle est donc ma propre boucle de rendu, salle.cpp (dans ce dossier) : la meme qu'a l'exercice 9, 72 trames par seconde et deux yeux, mais avec une chaine de TROIS images par oeil. Chaque trame emprunte une image, la peint vraiment (720 x 792 pixels), la rend, et affiche l'index employe. Voici sa sortie reelle, aussi dans salle_30_lignes.txt (T = temps depuis le depart) :
+TRAME 1 GAUCHE 0 DROIT 0 T 12 ms
+TRAME 2 GAUCHE 1 DROIT 1 T 130 ms
+TRAME 3 GAUCHE 2 DROIT 2 T 141 ms
+TRAME 4 GAUCHE 0 DROIT 0 T 156 ms
+TRAME 5 GAUCHE 1 DROIT 1 T 175 ms
+TRAME 6 GAUCHE 2 DROIT 2 T 193 ms
+TRAME 7 GAUCHE 0 DROIT 0 T 213 ms
+TRAME 8 GAUCHE 1 DROIT 1 T 228 ms
+TRAME 9 GAUCHE 2 DROIT 2 T 244 ms
+TRAME 10 GAUCHE 0 DROIT 0 T 257 ms
+TRAME 11 GAUCHE 1 DROIT 1 T 275 ms
+TRAME 12 GAUCHE 2 DROIT 2 T 296 ms
+TRAME 13 GAUCHE 0 DROIT 0 T 316 ms
+TRAME 14 GAUCHE 1 DROIT 1 T 331 ms
+TRAME 15 GAUCHE 2 DROIT 2 T 345 ms
+TRAME 16 GAUCHE 0 DROIT 0 T 364 ms
+TRAME 17 GAUCHE 1 DROIT 1 T 378 ms
+TRAME 18 GAUCHE 2 DROIT 2 T 391 ms
+TRAME 19 GAUCHE 0 DROIT 0 T 412 ms
+TRAME 20 GAUCHE 1 DROIT 1 T 426 ms
+TRAME 21 GAUCHE 2 DROIT 2 T 448 ms
+TRAME 22 GAUCHE 0 DROIT 0 T 460 ms
+TRAME 23 GAUCHE 1 DROIT 1 T 473 ms
+TRAME 24 GAUCHE 2 DROIT 2 T 494 ms
+TRAME 25 GAUCHE 0 DROIT 0 T 506 ms
+TRAME 26 GAUCHE 1 DROIT 1 T 522 ms
+TRAME 27 GAUCHE 2 DROIT 2 T 545 ms
+TRAME 28 GAUCHE 0 DROIT 0 T 565 ms
+TRAME 29 GAUCHE 1 DROIT 1 T 581 ms
+TRAME 30 GAUCHE 2 DROIT 2 T 593 ms
+Le cycle se lit directement : 0, 1, 2, 0, 1, 2... C'est (u - 1) % 3, le meme que la ligne CIBLES 3 2 de resultat.txt. Chaque image ne revient que toutes les trois trames, et les deux yeux avancent ensemble. Les trames sont espacees de 12 a 20 ms au lieu de 13,9 ms, et de 118 ms au demarrage : le PC faisait tourner en meme temps la mesure d'une minute de l'exercice 9.
+
+Le minimum d'images :
+Je le deduis des conflits de resultat.txt :
+- L = 0 : CONFLITS 1 0 0. Une image suffit.
+- L = 1 : une image donne 5 conflits sur 6 (toutes les trames sauf la premiere), deux images en donnent 0.
+- L = 2 : deux images donnent encore 4 conflits (de la trame 3 a la trame 6), trois images en donnent 0.
+A chaque fois, les conflits disparaissent des que n = L + 1, jamais avant. La raison : la trame u peint l'image (u - 1) % n, qui avait ete soumise par la trame u - n. Elle est encore lue si u - n se trouve parmi les L trames d'avant, c'est-a-dire si n <= L. Il faut donc n > L, et le minimum d'images est n = L + 1 : une image pour peindre, plus une pour chaque trame pendant laquelle le compositeur garde la sienne. Les premieres trames y echappent seulement parce que les trames de numero 0 ou moins n'existent pas : c'est pour cela que CONFLITS 2 2 vaut 4 et non 6.
+
+Sur le simulateur :
+Sur le simulateur, le compositeur lit l'image apres le rendu, dans la meme trame, donc L = 0, et une seule image suffit deja (CONFLITS 1 0 0). Le cycle de trois images n'y apporte rien de visible : aucune trame n'etait en conflit avec une image, il n'y en a donc pas moins avec trois. En plus, dans NKXRDemo, il n'y a qu'une seule vraie cible par oeil : les trois index de la chaine designeraient la meme texture, et le cycle 0, 1, 2 ne serait qu'un numero. Dans ma salle, les trois images existent vraiment, mais leur seul effet est de tripler la memoire : 3 x 2,2 Mo par oeil (720 x 792 x 4 octets) au lieu de 2,2 Mo. Les trois images ne servent que sur un vrai casque, ou le compositeur garde l'image une ou deux trames pour la deformer et la reprojeter (L = 1 ou 2). La, le minimum L + 1 vaut 2 ou 3, et trois images evitent de peindre dans celle qu'il affiche. Le simulateur ne peut pas montrer ce gain : il cache le besoin, comme il cachait le mauvais index a l'exercice 8.
